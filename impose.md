@@ -11,6 +11,9 @@ This is a jqmd script designed to run at startup of a Mantle Wordpress container
 # Exit on error
 set -euo pipefail
 
+# Generate initial .lock if not present
+[[ -f "$CODE_BASE/composer.lock" ]] || composer install --working-dir="$CODE_BASE" $COMPOSER_OPTIONS
+
 if ! REPLY=$(wp db tables); then
     wp db create
 fi
