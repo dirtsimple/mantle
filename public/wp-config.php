@@ -1,6 +1,7 @@
 <?php
-
-Env::init();  // expose env() function
+// Bootstrap composer and expose env() function
+require_once(__DIR__ . '/../vendor/autoload.php');
+Env::init();
 
 function mantle_def($key, $default=null) {
     if (isset($default)) define($key, env($key) ?: $default);
@@ -29,14 +30,16 @@ const
     DB_COLLATE = '',
     DB_CHARSET = 'utf8mb4',
     CONTENT_DIR = '/ext',
+    WP_CONTENT_DIR = __DIR__ . CONTENT_DIR
 ;
 
 // Calculated values
-define('MANTLE_PUBLIC_DIR', dirname(__DIR__) . '/public');
 define('WP_CONTENT_URL',    WP_HOME . CONTENT_DIR);
-define('WP_CONTENT_DIR',    MANTLE_PUBLIC_DIR . CONTENT_DIR);
 
-defined('ABSPATH') || define('ABSPATH', MANTLE_PUBLIC_DIR . '/wp/');
+defined('ABSPATH') || define('ABSPATH', __DIR__ . '/wp/');
 
 // Environment-specific config files
 require_once __DIR__ . WP_ENV . '-env.php';
+
+// Boot Wordpress
+require_once ABSPATH . 'wp-settings.php';
