@@ -58,6 +58,9 @@ command -v yaml2json >/dev/null || yaml2json() {
 # Exit on error
 set -euo pipefail
 
+# Generate initial .lock if not present
+[[ -f "$CODE_BASE/composer.lock" ]] || composer install --working-dir="$CODE_BASE" $COMPOSER_OPTIONS
+
 if ! REPLY=$(wp db tables); then
     wp db create
 fi
@@ -73,8 +76,18 @@ fi
 DEFINE  $'def jqmd_data($data): . as $orig |\n    reduce paths(type=="array") as $path (\n        (. // {}) * $data; setpath( $path; ($orig | getpath($path)) + ($data | getpath($path)) )\n    );\n'
 JSON \{\"options\":\{\}\}
 mdsh_raw_php+=($'$state = json_decode($args[0], true);\n$options = empty($state[\'options\']) ? [] : $state[\'options\'];\n\nforeach ($options as $opt => $new) {\n    $old = get_option($opt);\n    if (is_array($old) && is_array($new)) $new = array_replace_recursive($old, $new);\n    if ($new !== $old) {\n        if ($old === false) add_option($opt, $new); else update_option($opt, $new);\n    }\n}\n')
-for REPLY in ${MANTLE_STATES-}; do source ./states/$REPLY.state; done
+imposed_states=
+require-states() {
+    while (($#)); do
+        [[ $imposed_states == *"<$1>"* ]] || {
+            imposed_states+="<$1>"
+            source "$CODE_BASE/states/$1.state"
+        }
+        shift
+    done
+}
 
+require-states ${MANTLE_STATES-}
 REPLY=$(RUN_JQ -c -n)
 printf '%s\n' '<?php' "${mdsh_raw_php[@]}" | wp eval-file - "$REPLY"
 

@@ -60,11 +60,29 @@ foreach ($options as $opt => $new) {
 }
 ```
 
-### Process State Files
+### Imposing Named States
+
+States are imposed by sourcing their `.state` file at most once; states can require other states by calling `require-states` with one or more state names.
 
 ```shell
-for REPLY in ${MANTLE_STATES-}; do source ./states/$REPLY.state; done
+imposed_states=
+require-states() {
+    while (($#)); do
+        [[ $imposed_states == *"<$1>"* ]] || {
+            imposed_states+="<$1>"
+            source "$CODE_BASE/states/$1.state"
+        }
+        shift
+    done
+}
 
+require-states ${MANTLE_STATES-}
+```
+### Processing JSON and PHP
+
+After all required state files have been sourced, the accumulated YAML, JSON, and jq code they supplied is executed, to produce a JSON configuration.  All of the PHP code defined by this file and the state files is then run, with the JSON configuration as the `$state` variable.
+
+```shell
 REPLY=$(RUN_JQ -c -n)
 printf '%s\n' '<?php' "${mdsh_raw_php[@]}" | wp eval-file - "$REPLY"
 
