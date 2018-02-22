@@ -15,7 +15,7 @@ dk.bootstrap() {
     require-any doco basher install bashup/doco
     require-any jq
     require-any docker-compose
-    mkdir -p deploy
+    mkdir -p deploy public/ext/uploads public/ext/plugins public/ext/themes
 }
 
 dk.setup() {

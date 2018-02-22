@@ -1,0 +1,57 @@
+# Run "$@" in a subshell with service-specific .env loaded
+with-env() (
+    local env_file="deploy/$1.env"; [[ ! -f "$env_file" ]] || export-env "$env_file"
+    "${@:2}"
+)
+
+map-env() {
+    if have-services '==1'; then
+        with-env "$DOCO_SERVICES" "$@"
+    else
+        foreach-service map-env "$@"
+    fi
+}
+for REPLY in create kill logs pause pull push restart rm scale start stop unpause up; do eval "
+doco.$REPLY() {
+    if have-services; then
+        loco_exec $REPLY \"\$@\"
+    else
+        with-service dev loco_exec $REPLY \"\$@\"
+    fi
+}"
+done
+doco.asdev() {
+    printf -v REPLY "%q " "$@";
+    doco cmd "1 asdev" exec as-developer "$REPLY";
+}
+doco.wp() { doco cmd "1 wp" asdev env PAGER='less' LESS=R wp "$@"; }
+doco.db() { doco cmd "1 db" asdev wp db      "$@"; }
+doco.composer() { doco cmd "1 composer" asdev composer "$@"; }
+doco.dba() {
+    if have-services '==1'; then map-env dba "$@"; else doco cmd 1 dba "$@"; fi
+}
+
+dba() { if fn-exists "dba.${1-}"; then "dba.${1-}" "${@:2}"; else run-dba; fi; }
+
+run-dba() {
+    mysql -h "$DB_HOST" -u root -p "$DB_ROOTPASS" mysql
+}
+
+sql-escape() { set -- "${@//\\/\\\\}"; set -- "${@//\'/\\\'}"; REPLY=("$@"); }
+dba.mkuser() {
+    sql-escape "$DB_USER" "$DB_PASSWORD"
+    printf \
+        "GRANT ALL PRIVILEGES ON \`%s\`.* TO '%s'@'%%' IDENTIFIED BY '%s'; FLUSH PRIVILEGES;" \
+        "$DB_NAME" "$REPLY" "${REPLY[1]}" | dba
+}
+dba.dropuser() {
+    sql-escape "$DB_USER"; printf "DROP USER '%s'@'%%'; FLUSH PRIVILEGES;" "$REPLY" | dba
+}
+doco.compile() {
+    mdsh-make impose.md bin/impose
+    for REPLY in states/*.state.md; do
+        if [[ -f $REPLY ]]; then
+            mdsh-make "$REPLY" "${REPLY%.md}" unset -f mdsh:file-header mdsh:file-footer
+        fi
+    done
+}
