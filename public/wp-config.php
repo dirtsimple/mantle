@@ -5,7 +5,7 @@ Env::init();
 
 function mantle_def($key, $default=null) {
     if (isset($default)) define($key, env($key) ?: $default);
-    elseif (!isset(env($key)) die "Missing env var: $key";
+    elseif (null === env($key)) die("Missing env var: $key");
     else define($key, env($key));
 }
 
@@ -38,8 +38,10 @@ define('WP_CONTENT_URL',    WP_HOME . CONTENT_DIR);
 
 defined('ABSPATH') || define('ABSPATH', __DIR__ . '/wp/');
 
+$table_prefix = DB_PREFIX;
+
 // Environment-specific config files
-require_once __DIR__ . WP_ENV . '-env.php';
+require_once __DIR__ . '/' . WP_ENV . '-env.php';
 
 // Boot Wordpress
 require_once ABSPATH . 'wp-settings.php';
