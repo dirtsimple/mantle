@@ -1,2 +1,14 @@
 .deps
 .devkit
+.doco-cache.*
+.env
+deploy/
+vendor/
+
+public/ext/plugins
+public/ext/mu-plugins/*/
+public/ext/upgrade
+public/ext/uploads
+
+public/wp
+public/.htaccess
