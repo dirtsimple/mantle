@@ -36,8 +36,6 @@ dk.setup() {
     set -- prod stage dev
     while (($#)); do
         local env_file=deploy/$1.env
-        env-setdefault WP_HOME echo "\${${1^^}_URL}"
-        env-setdefault WP_ENV echo "$1"
         env-setdefault DB_USER echo "$1"
         env-setdefault DB_PASSWORD gen-pass
         wp-keygen
