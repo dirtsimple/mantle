@@ -1,5 +1,50 @@
 # Mantle Configuration
 
+Mantle loads its configuration variables, functions, and docker-compose configuration in this order (with later items overriding earlier ones):
+
+* `/etc/doco/config` and `~/.config/doco`, if they exist
+* The project `.env` file (variables only, docker-compose env file format)
+* This file and [Commands.md](Commands.md)
+* `/etc/mantlerc.md` and `~/.config/mantlerc.md`, if they exist
+
+After the above files are loaded, the configuration is then modified as follows:
+
+* Servers' `env_files` are prepended by any `MANTLE_DEFAULTS`
+* Commands defined by any `MANTLE_PROFILES_*` are executed
+* The `PROD_URL`, `DEV_URL`, and `STAGE_URL` variables are exported, normalized to have a trailing `/`
+* The `DOCO_PROFILE` is executed, if set
+
+This allows you to define sitewide default profiles for URL routing, database access, `.env` files with passwords, API keys, etc.
+
+```shell
+load-mantle-config() {
+    if [[ "${!MANTLE_*}" ]]; then
+        # For security, MANTLE_* vars can only be set from known/trusted files, so
+        # we clear them first, then reload them from the project .env file
+        unset "${!MANTLE_@}"
+        [[ ! -f "$LOCO_ROOT/.env" ]] || export-env "$LOCO_ROOT/.env"
+    fi
+
+    # Load local config files
+    for REPLY in /etc/mantlerc.md ~/.config/mantlerc.md; do
+        [[ ! -f "$REPLY" ]] || include "$REPLY";
+    done
+
+    # Prepend env_files from MANTLE_DEFAULTS
+    if [[ "${MANTLE_DEFAULTS-}" ]]; then
+        FILTER 'servers(.env_files |= (.env.MANTLE_DEFAULTS / ":" + .))'
+    fi
+
+    # Execute MANTLE_PROFILES_*
+    for REPLY in "${!MANTLE_PROFILES_@}"; do eval "${!REPLY}"; done
+
+    # Validate and normalize URLs
+    parse-url "$DEV_URL" DEV_URL
+    parse-url "$STAGE_URL" STAGE_URL
+    parse-url "$PROD_URL" PROD_URL
+}
+```
+
 ## Services
 
 ### PHP Servers
@@ -57,14 +102,6 @@ volumes:
 ```
 
 ## Profiles
-
-Mantle profiles are loaded from any `MANTLE_PROFILE_xxx` vars defined by the `.env`, or set from `/etc/doco/config` or `~/.config/doco`.
-
-```shell
-load-mantle-profiles() {
-    for REPLY in "${!MANTLE_PROFILES_@}"; do REPLY=${!REPLY}; eval "$REPLY"; done
-}
-```
 
 ### localdb
 
@@ -171,10 +208,10 @@ add-port-route() {
 
 ## Initialization
 
-Commands are implemented in [Commands.md](Commands.md); profiles are loaded afterward.
+Commands are implemented in [Commands.md](Commands.md); profiles and other configuration are loaded afterward.
 
 ```shell
 include Commands.md
-load-mantle-profiles
+load-mantle-config
 ```
 
