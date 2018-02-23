@@ -82,6 +82,7 @@ localdb() {
     FILTER 'jqmd_data(localdb)'
     run-dba() {
         REPLY=; [[ -t 0 && -t 1 ]] || REPLY=-T
+        doco mysql up -d
         doco -- mysql exec $REPLY mysql -uroot mysql
     }
 }
