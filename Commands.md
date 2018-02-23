@@ -21,6 +21,27 @@ map-env() {
 }
 ```
 
+### URL Components
+
+The `parse-url` function parses an absolute URL in `$1` and sets `REPLY` to an array containing:
+
+* The URL normalized to include a trailing `/`
+* The URL scheme
+* The URL host
+* The URL port (or an empty string)
+* The URL path (or an empty string if no non-`/` path was included)
+
+A variable name can be passed in `$2`: if given, its value is set to the normalized URL and `export`ed.
+
+```shell
+parse-url() {
+    [[ $1 =~ ([^:]+)://([^/:]+)(:[0-9]+)?(/.*)$ ]] || loco_error "Invalid ${2-URL}: $1"
+    REPLY=("${BASH_REMATCH%/}/" "${BASH_REMATCH[1]}" "${BASH_REMATCH[2]}" "${BASH_REMATCH[3]#:}"  "${BASH_REMATCH[4]%/}")
+    [[ ! "${2-}" ]] || export "$2=$REPLY"
+}
+
+```
+
 ## Service Commands
 
 Normally, `up`, `start`, `stop`, etc. apply to all services by default.  But we only want them to apply to development:
