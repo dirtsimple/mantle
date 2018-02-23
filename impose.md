@@ -1,6 +1,6 @@
 ## `impose`: Impose States on a Wordpress Instance
 
-This is a jqmd script designed to run at startup of a Mantle Wordpress container.  It ensures that a database has been created and the Wordpress core has been installed, before proceeding to load applicable states.
+This is a [jqmd](https://github.com/bashup/jqmd) script designed to run at startup of a Mantle Wordpress container.  It ensures that a database has been created and the Wordpress core has been installed, before proceeding to load applicable states.
 
 (Note: the `WP_HOME`, `WP_ADMIN_USER`, and `WP_ADMIN_EMAIL` variables must be defined if Wordpress is not already installed.)
 
