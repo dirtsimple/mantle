@@ -13,14 +13,16 @@ set-alias cmd-default dev   # default to 'dev' service
 
 #### URL Components
 
-The `{DEV,STAGE,PROD}_URL`, variables are split into `*_SCHEME`, `*_HOST`, and `*_PATH` variables, for use by routing profiles.  (So, for example, the `STAGE_HOST` variable will be the host of `STAGE_URL`.)
+The `{DEV,STAGE,PROD}_URL`, variables are split into `*_SCHEME`, `*_HOST`, `*_PORT`, and `*_PATH` variables, for use by routing profiles.  (So, for example, the `STAGE_HOST` variable will be the host of `STAGE_URL`.)  In the process, the `*_URL` variables are also normalized to include a trailing /.
 
 ```shell
 split-url() {
-    [[ $2 =~ ([^:]+)://([^/]+)(.*/)$ ]] || loco_error "Invalid URL for $1: $2"
+    [[ $2 =~ ([^:]+)://([^/:]+)(:[0-9]+)?(/.*)$ ]] || loco_error "Invalid URL for $1: $2"
     export "$1_SCHEME=${BASH_REMATCH[1]}"
     export "$1_HOST=${BASH_REMATCH[2]}"
-    export "$1_PATH=${BASH_REMATCH[3]}"
+    export "$1_PORT=${BASH_REMATCH[3]#:}"
+    export "$1_PATH=${BASH_REMATCH[4]%/}"
+    export "$1_URL=${BASH_REMATCH%/}/"
 }
 
 split-url DEV "$DEV_URL"
@@ -143,8 +145,9 @@ route-via-traefik() {
 }
 
 add-traefik-route() {
-   local -n h=${1^^}_HOST p=${1^^}_PATH
-   FILTER "$1"'( .labels |= ( ."traefik.frontend.rule"="'"Host:$h${p:+;PathPrefix:$p}"'"))'
+   local -n h=${1^^}_HOST p=${1^^}_PATH po=${1^^}_PORT u=${1^^}_URL
+   [[ ! "$po" ]] || loco_error "$u -- ports not currently supported for traefik routes"
+   FILTER "$1"'( .labels |= ( ."traefik.frontend.rule"="'"Host:$h${p:+;PathPrefix:$p/}"'"))'
 }
 ```
 
@@ -160,9 +163,28 @@ route-via-nginx-proxy() {
 }
 
 add-nginx-proxy-route() {
-    local -n h=${1^^}_HOST p=${1^^}_PATH
-    [[ $p == / ]] || loco_error "nginx-proxy can only route to virtual hosts"
+    local -n h=${1^^}_HOST p=${1^^}_PATH po=${1^^}_PORT u=${1^^}_URL
+    [[ ! "$p$po" ]] || loco_error "$u -- nginx-proxy can't route ports or paths"
     FILTER "$1"'(.environment |= (.VIRTUAL_PORT=80 | .VIRTUAL_HOST="'"$h"'"))'
+}
+```
+
+### route-via-ports
+
+The `route-via-ports` profile publishes ports using the host:port info from the corresponding URLs.  If the host isn't an IP address, it's converted to one using the first entry from `getent hosts`.
+
+```shell
+route-via-ports() {
+    add-port-route prod
+    add-port-route stage
+    add-port-route dev
+}
+
+add-port-route() {
+    local -n h=${1^^}_HOST p=${1^^}_PATH po=${1^^}_PORT u=${1^^}_URL
+    [[ ! "$p" ]] || loco_error "$u -- port routing can't route paths"
+    [[ $h =~ ^[0-9.]+$ ]] || local h=($(getent hosts "$h"))
+    FILTER "$1"'(.ports += ["'"${h:+$h:}${po:-80}:80"'"])'
 }
 ```
 
