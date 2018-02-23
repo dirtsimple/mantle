@@ -27,6 +27,7 @@ doco.asdev() {
 doco.wp() { doco cmd "1 wp" asdev env PAGER='less' LESS=R wp "$@"; }
 doco.db() { doco cmd "1 db" asdev wp db      "$@"; }
 doco.composer() { doco cmd "1 composer" asdev composer "$@"; }
+doco.impose() { doco cmd "1 impose" asdev bin/impose; }
 doco.dba() {
     if have-services '==1'; then map-env dba "$@"; else doco cmd 1 dba "$@"; fi
 }

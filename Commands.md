@@ -70,7 +70,11 @@ doco.db() { doco cmd "1 db" asdev wp db      "$@"; }
 doco.composer() { doco cmd "1 composer" asdev composer "$@"; }
 ```
 
+### impose
 
+```shell
+doco.impose() { doco cmd "1 impose" asdev bin/impose; }
+```
 
 ## Other Commands
 
