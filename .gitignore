@@ -1,6 +1,7 @@
 .deps
 .devkit
 .doco-cache.*
+.doco-cache/
 .env
 deploy/
 vendor/

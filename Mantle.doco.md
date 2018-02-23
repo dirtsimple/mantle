@@ -193,7 +193,7 @@ add-port-route() {
 Commands are implemented in [Commands.md](Commands.md); profiles are loaded afterward.
 
 ```shell
-include Commands.md bin/mantle-commands
+include Commands.md
 load-mantle-profiles
 ```
 
