@@ -23,14 +23,20 @@ dk.setup() {
 
     # Generate db config
     local env_file=.env
+    [[ -f "$env_file" ]] || cp example.env "$env_file"
     env-setdefault DB_ROOTUSER echo root
     env-setdefault DB_ROOTPASS gen-pass
-    touch deploy/all.env
+
+    local env_file=deploy/all.env
+    env-setdefault WP_ADMIN_USER whoami
+    env-setdefault WP_ADMIN_EMAIL echo "$USER@$HOSTNAME"
+    env-setdefault WP_ADMIN_PASS openssl rand -base64 8
 
     # Generate any needed WP config data for all containers
     set -- prod stage dev
     while (($#)); do
         local env_file=deploy/$1.env
+        env-setdefault WP_HOME echo "\${${1^^}_URL}"
         env-setdefault WP_ENV echo "$1"
         env-setdefault DB_USER echo "$1"
         env-setdefault DB_PASSWORD gen-pass
@@ -41,7 +47,7 @@ dk.setup() {
 
 # Add an entry to an .env file if it's not already there
 env-setdefault() {
-    if ! grep -qs "^\\s*$1=" "$env_file"; then
+    if [[ ! -f "$env_file" ]] || ! grep -qs "^\\s*$1=" "$env_file"; then
         REPLY=$("${@:2}")  # trap any failure here
         echo "$1=$REPLY" >>"$env_file"
     fi
