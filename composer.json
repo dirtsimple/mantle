@@ -1,0 +1,60 @@
+{
+    "name": "dirtsimple/mantle",
+    "type": "project",
+    "license": "MIT",
+    "description": "Literate DevOps for Wordpress",
+    "homepage": "https://github.com/dirtsimple/mantle/",
+    "authors": [
+        {
+            "name": "PJ Eby",
+            "homepage": "https://github.com/pjeby"
+        }
+    ],
+    "keywords": [
+        "bedrock",
+        "wordpress",
+        "composer",
+        "docker-compose",
+        "literate-devops",
+        "wp"
+    ],
+    "support": {
+        "issues": "https://github.com/dirtsimple/mantle/issues"
+    },
+    "config": {
+        "preferred-install": "dist"
+    },
+    "repositories": {
+        "wpackagist": {
+            "type": "composer",
+            "url": "https://wpackagist.org"
+        }
+    },
+    "require": {
+        "php": ">=7.1",
+        "composer/installers": "^1.5",
+        "johnpbloch/wordpress": "4.9.4",
+        "oscarotero/env": "^1.1.0",
+        "roots/wp-password-bcrypt": "1.0.0",
+        "wp-cli/wp-cli": "^1.4",
+        "wp-cli/eval-command": "^1.0.6|dev-master",
+        "psy/psysh": "^0.8.17"
+    },
+    "require-dev": {
+        "schlessera/wp-cli-psysh": "^0.1.0"
+    },
+    "extra": {
+        "installer-paths": {
+            "public/ext/mu-plugins/{$name}/": [
+                "type:wordpress-muplugin"
+            ],
+            "public/ext/plugins/{$name}/": [
+                "type:wordpress-plugin"
+            ],
+            "public/ext/themes/{$name}/": [
+                "type:wordpress-theme"
+            ]
+        },
+        "wordpress-install-dir": "public/wp"
+    }
+}
