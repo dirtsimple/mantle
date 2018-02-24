@@ -68,8 +68,7 @@ Run the specified command line inside the container using the `as-developer` too
 
 ```shell
 doco.asdev() {
-    printf -v REPLY "%q " "$@";
-    doco cmd "1 asdev" exec as-developer "$REPLY";
+    doco cmd "1 asdev" exec as-developer "$@";
 }
 ```
 
@@ -82,7 +81,7 @@ doco.wp() { doco cmd "1 wp" asdev env PAGER='less' LESS=R wp "$@"; }
 ### db
 
 ```shell
-doco.db() { doco cmd "1 db" asdev wp db      "$@"; }
+doco.db() { doco cmd "1 db" asdev wp db "$@"; }
 ```
 
 ### composer
