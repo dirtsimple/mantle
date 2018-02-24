@@ -61,7 +61,7 @@ set-alias cmd-default dev   # default to 'dev' service
 ```yaml
 services:
   prod: &defaults
-      image: dirtsimple/php-server
+      image: dirtsimple/mantle:latest
       env_file: [ "./deploy/all.env" ]
       environment:
         RUN_SCRIPTS: "bin/impose"
@@ -74,7 +74,6 @@ services:
         NGINX_NO_WRITE: .
         EXCLUDE_PHP: /ext/uploads
         PAGER: "less"
-        EXTRA_APKS: "less jq nano bind-tools mysql-client"
   stage:
     <<: *defaults
   dev:
@@ -92,6 +91,10 @@ services:
     env_file: [ "./deploy/stage.env" ]
     environment: { WP_HOME: "${STAGE_URL}", WP_ENV: "stage" }
   dev:
+    build:
+      context: "https://github.com/dirtsimple/php-server.git#1.2.0"
+      args:
+        EXTRA_APKS: "less jq nano bind-tools mysql-client"
     env_file: [ "./deploy/dev.env" ]
     environment: { WP_HOME: "${DEV_URL}", WP_ENV: "dev" }
     volumes:

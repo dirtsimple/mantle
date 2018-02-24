@@ -41,6 +41,9 @@ dk.setup() {
         wp-keygen
         shift
     done
+
+    # Build the mantle image
+    doco build dev
 }
 
 # Add an entry to an .env file if it's not already there
