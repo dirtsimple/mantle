@@ -19,8 +19,8 @@ array_map('mantle_def', [
 
 // Optional env vars
 array_map('mantle_def',
-    ['WP_ENV',     'WP_SITE_URL',   'DB_PREFIX', 'DISABLE_WP_CRON' ],
-    ['production', WP_HOME . '/wp', 'wp_',       false ]
+    ['WP_ENV',     'WP_SITEURL',   'DB_PREFIX', 'DISABLE_WP_CRON' ],
+    ['production', WP_HOME . 'wp', 'wp_',       false ]
 );
 
 // Fixed values
@@ -34,7 +34,7 @@ const
 ;
 
 // Calculated values
-define('WP_CONTENT_URL',    WP_HOME . CONTENT_DIR);
+define('WP_CONTENT_URL',    WP_HOME . "ext");
 
 defined('ABSPATH') || define('ABSPATH', __DIR__ . '/wp/');
 
