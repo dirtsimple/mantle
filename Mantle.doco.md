@@ -32,7 +32,7 @@ load-mantle-config() {
 
     # Prepend env_files from MANTLE_DEFAULTS
     if [[ "${MANTLE_DEFAULTS-}" ]]; then
-        FILTER 'servers(.env_file |= (env.MANTLE_DEFAULTS / ":" + .))'
+        FILTER 'servers(.env_file |= (env.MANTLE_DEFAULTS / ":" + . | map(select(. != "")) ))'
     fi
 
     # Execute MANTLE_PROFILES_*
