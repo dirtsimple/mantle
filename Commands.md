@@ -68,7 +68,9 @@ Run the specified command line inside the container using the `as-developer` too
 
 ```shell
 doco.asdev() {
-    doco cmd "1 asdev" exec as-developer "$@";
+    set -- as-developer "$@";
+    [[ -t 1 ]] || set -- -T "$@";
+    doco cmd "1 asdev" exec "$@";
 }
 ```
 
