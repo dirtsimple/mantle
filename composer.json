@@ -38,7 +38,8 @@
         "roots/wp-password-bcrypt": "1.0.0",
         "wp-cli/wp-cli": "^1.4",
         "wp-cli/eval-command": "^1.0.6|dev-master",
-        "psy/psysh": "^0.8.17"
+        "psy/psysh": "^0.8.17",
+        "dirtsimple/imposer": "dev-master"
     },
     "require-dev": {
         "schlessera/wp-cli-psysh": "^0.1.0"

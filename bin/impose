@@ -1,76 +1,5 @@
 #!/usr/bin/env bash
 
-# --- BEGIN jqmd runtime ---
-
-jqmd_imports=
-jqmd_filters=
-jqmd_defines=
-
-HAVE_FILTERS() { [[ ${jqmd_filters-} ]]; }
-CLEAR_FILTERS() { unset jqmd_filters; }
-
-IMPORTS() { jqmd_imports+="${jqmd_imports:+$'\n'}$1"; }
-DEFINE()  { jqmd_defines+="${jqmd_defines:+$'\n'}$1"; }
-FILTER()  { jqmd_filters+="${jqmd_filters:+|}$1"; }
-
-JQOPTS=(jq)
-JQ_OPTS() { JQOPTS+=("$@"); }
-ARG()     { JQ_OPTS --arg     "$1" "$2"; }
-ARGJSON() { JQ_OPTS --argjson "$1" "$2"; }
-
-RUN_JQ() {
-    local opt nargs cmd=(jq); set -- "${JQOPTS[@]:1}" "$@"
-
-    while (($#)); do
-        case "$1" in
-        -{f,-fromfile})                     nargs=2 ; FILTER "$(<"$2")" ;;
-        -{L,-indent})                       nargs=2 ;;
-        --{arg,arjgson,slurpfile,argfile})  nargs=3 ;;
-        --)  break   ;; # rest of args are data files
-        -*)  nargs=1 ;;
-        *)   FILTER "$1"; break ;; # jq program: data files follow
-        esac
-        cmd+=("${@:1:$nargs}")    # add $nargs args to cmd
-        shift $nargs
-    done
-
-    HAVE_FILTERS || FILTER .    # jq needs at least one filter expression
-
-    "${cmd[@]}" -f <(
-        printf "%s\n" "${jqmd_imports-}" "${jqmd_defines-}" "${jqmd_filters-}"
-    ) "${@:2}"
-
-    CLEAR_FILTERS   # cleanup for any re-runs
-}
-
-YAML()    { JSON "$(echo "$1" | yaml2json /dev/stdin)"; }
-JSON()    { FILTER "jqmd_data($1)"; }
-
-yaml2json:cmd() { command yaml2json /dev/stdin; }
-
-yaml2json:py() {
-    python -c 'import sys, yaml, json; json.dump(yaml.safe_load(sys.stdin), sys.stdout)'
-}
-
-yaml2json:php() {
-    php -r 'echo json_encode( yaml_parse(file_get_contents("php://stdin")) );'
-}
-
-yaml2json() {
-    local kind  # auto-select between available yaml2json implementations
-    for kind in cmd py php; do
-        REPLY=($(yaml2json:$kind < <(echo "a: b") 2>/dev/null))
-        printf -v REPLY %s ${REPLY+"${REPLY[@]}"}
-        if [[ "$REPLY" == '{"a":"b"}' ]]; then
-            eval "yaml2json() { yaml2json:$kind; }"; yaml2json; return
-        fi
-    done
-    mdsh-error "To process YAML, must have one of: yaml2json, PyYAML, or php w/yaml extension"
-    exit 69 # EX_UNAVAILABLE
-}
-
-# --- END jqmd runtime ---
-
 # Run as developer user
 [[ $(whoami) == 'developer' ]] || exec as-developer "$0" "$@";
 
@@ -92,23 +21,7 @@ if ! wp core is-installed; then
         --admin_email="$WP_ADMIN_EMAIL" \
         ${WP_ADMIN_PASS:+--admin_password="$WP_ADMIN_PASS"}
 fi
-DEFINE  $'def jqmd_data($data): . as $orig |\n    reduce paths(type=="array") as $path (\n        (. // {}) * $data; setpath( $path; ($orig | getpath($path)) + ($data | getpath($path)) )\n    );\n'
-JSON \{\"options\":\{\}\}
-mdsh_raw_php+=($'$state = json_decode($args[0], true);\n$options = empty($state[\'options\']) ? [] : $state[\'options\'];\n\nforeach ($options as $opt => $new) {\n    $old = get_option($opt);\n    if (is_array($old) && is_array($new)) $new = array_replace_recursive($old, $new);\n    if ($new !== $old) {\n        if ($old === false) add_option($opt, $new); else update_option($opt, $new);\n    }\n}\n')
-imposed_states=
-require-states() {
-    while (($#)); do
-        [[ $imposed_states == *"<$1>"* ]] || {
-            imposed_states+="<$1>"
-            source "$CODE_BASE/states/$1.state"
-        }
-        shift
-    done
-}
 
-require-states ${MANTLE_STATES-}
-REPLY=$(RUN_JQ -c -n)
-printf '%s\n' '<?php' "${mdsh_raw_php[@]}" | wp eval-file - "$REPLY"
-
-CLEAR_FILTERS  # prevent auto-run to stdout
-if [[ $0 == $BASH_SOURCE ]] && HAVE_FILTERS; then RUN_JQ; fi
+if [[ ${MANTLE_STATES-} ]]; then
+    imposer require ${MANTLE_STATES}
+fi

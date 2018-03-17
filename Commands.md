@@ -142,19 +142,3 @@ dba.dropuser() {
     sql-escape "$DB_USER"; printf "DROP USER '%s'@'%%'; FLUSH PRIVILEGES;" "$REPLY" | dba
 }
 ```
-
-### compile
-
-The compile command builds state files and the state compiler.  During development, it can be run automatically by adding it to the `DOCO_PROFILES` variable, e.g. `DOCO_PROFILES=...; doco compile`.
-
-```shell
-doco.compile() {
-    mdsh-make impose.md bin/impose
-    for REPLY in states/*.state.md; do
-        if [[ -f $REPLY ]]; then
-            mdsh-make "$REPLY" "${REPLY%.md}" unset -f mdsh:file-header mdsh:file-footer
-        fi
-    done
-}
-```
-
