@@ -98,6 +98,12 @@ doco.composer() { doco cmd "1 composer" asdev composer "$@"; }
 doco.impose() { doco cmd "1 impose" asdev bin/impose; }
 ```
 
+### imposer
+
+```shell
+doco.imposer() { doco cmd "1 imposer" asdev imposer "$@"; }
+```
+
 ## Other Commands
 
 ### dba
