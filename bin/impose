@@ -22,6 +22,4 @@ if ! wp core is-installed; then
         ${WP_ADMIN_PASS:+--admin_password="$WP_ADMIN_PASS"}
 fi
 
-if [[ ${MANTLE_STATES-} ]]; then
-    imposer require ${MANTLE_STATES}
-fi
+imposer apply ${MANTLE_STATES-}
