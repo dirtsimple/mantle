@@ -7,8 +7,9 @@
 
 # Available modules (uncomment to use):
 
+dk use: entr-watch        # watch files and re-run tests or other commands
+
 # dk use: cram              # run tests using the "cram" functional test tool
-# dk use: entr-watch        # watch files and re-run tests or other commands
 # dk use: shell-console     # make the "console" command enter a subshell
 # dk use: virtualenv        # enable creation and use of Python virtualenvs
 # dk use: composer          # utilities for accessing composer-based dev tools
@@ -19,3 +20,7 @@
 # Define overrides, new commands, functions, etc. here:
 
 dk use: mantle
+
+watch.files() { doco imposer sources; }
+
+on "files_changed" doco imposer apply
