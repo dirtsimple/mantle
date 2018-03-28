@@ -4,6 +4,7 @@ Mantle loads its configuration variables, functions, and docker-compose configur
 
 * `/etc/doco/config` and `~/.config/doco`, if they exist
 * The project `.env` file (variables only, docker-compose env file format)
+* The project `.envrc` file (regular shell format, functions and variables)
 * This file and [Commands.md](Commands.md)
 * `/etc/mantlerc.md` and `~/.config/mantlerc.md`, if they exist
 
@@ -74,6 +75,11 @@ services:
         NGINX_NO_WRITE: .
         EXCLUDE_PHP: /ext/uploads
         PAGER: "less"
+        IMPOSER_THEMES:
+        IMPOSER_PLUGINS:
+        IMPOSER_VENDOR:
+        IMPOSER_PACKAGES:
+        IMPOSER_GLOBALS:
   stage:
     <<: *defaults
   dev:
@@ -215,6 +221,7 @@ add-port-route() {
 Commands are implemented in [Commands.md](Commands.md); profiles and other configuration are loaded afterward.
 
 ```shell
+. .envrc
 include Commands.md
 load-mantle-config
 ```
