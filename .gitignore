@@ -7,10 +7,12 @@ deploy/
 imposer/.cache/
 vendor/
 
-public/ext/plugins
 public/ext/mu-plugins/*/
+public/ext/plugins/*
 public/ext/upgrade
 public/ext/uploads/*
+
+!public/ext/plugins/.gitkeep
 !public/ext/uploads/.gitkeep
 
 public/wp
