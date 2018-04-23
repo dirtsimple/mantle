@@ -4,7 +4,7 @@ Mantle is a [bedrock](https://github.com/roots/bedrock)-inspired, composer-orien
 
 ### State Management
 
-In addition to being a convenient template for Wordpress projects, Mantle wraps [imposer](https://github.com/dirtsimple/imposer) with a [bootstrap script](bin/impose) that automatically runs at container start (but can also be run manually) to forcibly set aspects of Wordpress's state (usually in the database).
+In addition to being a convenient template for Wordpress projects, Mantle wraps [imposer](https://github.com/dirtsimple/imposer) with a [bootstrap script](bin/startup) that automatically runs at container start to forcibly set aspects of Wordpress's state (usually in the database).
 
 For example, you can define a [state](states/README.md) file that reads various API keys from the container's environment and then tweaks Wordpress option values to use those keys instead of whatever was in the database before.  Or you can define states that ensure specific plugins are installed or activated or deactivated, specific menus exist, etc.
 
@@ -43,4 +43,4 @@ $ doco dev up -d        # create and start the dev container
 
 ### Project Status
 
-This project is in active development and lacks end-user documentation other than this file.  For developer documentation, see the [Configuration](Mantle.doco.md), [Commands](Commands.md), [impose](bin/impose), and [state files](./states/README.md) docs.
+This project is in active development and lacks end-user documentation other than this file.  For developer documentation, see the [Configuration](Mantle.doco.md), [Commands](Commands.md), [startup](bin/startup), and [state files](./states/README.md) docs.
