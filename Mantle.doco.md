@@ -65,7 +65,7 @@ services:
       image: dirtsimple/mantle:latest
       env_file: [ "./deploy/all.env" ]
       environment:
-        RUN_SCRIPTS: "bin/impose"
+        RUN_SCRIPTS: "bin/startup"
         PHP_CONTROLLER: "true"
         PHP_MEM_LIMIT: "256"
         PUBLIC_DIR: public
