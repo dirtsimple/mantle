@@ -23,4 +23,4 @@ if ! wp core is-installed; then
     wp post delete 1 2 --force   # delete placeholder posts
 fi
 
-imposer apply ${MANTLE_STATES-}
+imposer apply
