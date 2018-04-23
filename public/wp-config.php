@@ -4,9 +4,10 @@ require_once(__DIR__ . '/../vendor/autoload.php');
 Env::init();
 
 function mantle_def($key, $default=null) {
-    if (isset($default)) define($key, env($key) ?: $default);
-    elseif (null === env($key)) die("Missing env var: $key");
-    else define($key, env($key));
+	$val = env($key);
+	if (isset($default)) define($key, isset($val) ? $val : $default);
+	elseif ( !isset($val) ) die("Missing env var: $key");
+	else define($key, $val);
 }
 
 // Required env vars
