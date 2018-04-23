@@ -1,12 +1,12 @@
 # Literate DevOps for Wordpress
 
-Mantle is a [bedrock](https://github.com/roots/bedrock)-inspired, composer-oriented, docker runtime environment for Wordpress, built on [doco](https://github.com/bashup/doco), [.devkit](https://github.com/bashup/.devkit), and [dirtsimple/php-server](https://github.com/dirtsimple/php-server).
+Mantle is a [bedrock](https://github.com/roots/bedrock)-inspired, [imposer](https://github.com/dirtsimple/imposer)-based, composer-oriented, docker-compose runtime environment for Wordpress development, built on [doco](https://github.com/bashup/doco), [.devkit](https://github.com/bashup/.devkit), and [dirtsimple/php-server](https://github.com/dirtsimple/php-server).
 
 ### State Management
 
-In addition to being a convenient template for Wordpress projects, Mantle wraps [imposer](https://github.com/dirtsimple/imposer) with a [bootstrap script](bin/startup) that automatically runs at container start to forcibly set aspects of Wordpress's state (usually in the database).
+In addition to being a convenient template for Wordpress projects, Mantle is designed to work with [imposer](https://github.com/dirtsimple/imposer), automatically running `imposer apply` at container start to apply Wordpress configuration from your project source and environment variables.
 
-For example, you can define a [state](states/README.md) file that reads various API keys from the container's environment and then tweaks Wordpress option values to use those keys instead of whatever was in the database before.  Or you can define states that ensure specific plugins are installed or activated or deactivated, specific menus exist, etc.
+For example, you can define a [state file](https://github.com/dirtsimple/imposer#how-states-work) file that reads various API keys from the container's environment and then tweaks Wordpress option values to use those keys instead of whatever was in the database before.  Or you can define states that ensure specific plugins are installed or activated or deactivated, specific menus exist, etc.
 
 In other words, states are like "migrations" or Drupal "features", allowing you to expose Wordpress configuration in documented, revision-controlled files, instead of having values appear only inside various database tables.
 
@@ -39,8 +39,8 @@ $ doco dev dba mkuser   # make a dev user w/generated password and db access
 $ doco dev up -d        # create and start the dev container
 ```
 
-(Note: if you're not using direnv and don't have doco installed globally, you'll need to `source .envrc` to add project tools like `doco` to your `PATH`.  This will also override `wp` and `composer` with scripts that run those commands inside the development container, i.e. by aliasing them to `doco wp` and `doco composer`.)
+(Note: if you're not using direnv and don't have doco installed globally, you'll need to `source .envrc` in a subshell to add project tools like `doco` to your `PATH`.  This will also override `wp` and `composer` with scripts that run those commands inside the development container, i.e. by aliasing them to `doco wp` and `doco composer`.)
 
 ### Project Status
 
-This project is in active development and lacks end-user documentation other than this file.  For developer documentation, see the [Configuration](Mantle.doco.md), [Commands](Commands.md), [startup](bin/startup), and [state files](https://github.com/dirtsimple/imposer#how-states-work) docs, along with the [Mantle state file](imposer/Mantle.state.md).
+This project is in active development and lacks end-user documentation other than this file.  For developer documentation, see the [Configuration](Mantle.doco.md), [Commands](Commands.md), and [state files](https://github.com/dirtsimple/imposer#how-states-work) docs, along with the [Mantle state file](imposer/Mantle.state.md).
