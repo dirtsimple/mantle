@@ -9,18 +9,4 @@ set -euo pipefail
 # Generate initial .lock if not present
 [[ -f "$CODE_BASE/composer.lock" ]] || composer install --working-dir="$CODE_BASE" $COMPOSER_OPTIONS
 
-if ! REPLY=$(wp db tables); then
-    wp db create
-fi
-
-if ! wp core is-installed; then
-    wp core install --skip-email \
-        --url="$WP_HOME" \
-        --title="Placeholder" \
-        --admin_user="$WP_ADMIN_USER" \
-        --admin_email="$WP_ADMIN_EMAIL" \
-        ${WP_ADMIN_PASS:+--admin_password="$WP_ADMIN_PASS"}
-    wp post delete 1 2 --force   # delete placeholder posts
-fi
-
 imposer apply
