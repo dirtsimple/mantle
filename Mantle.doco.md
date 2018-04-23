@@ -98,9 +98,9 @@ services:
     environment: { WP_HOME: "${STAGE_URL}", WP_ENV: "stage" }
   dev:
     build:
-      context: "https://github.com/dirtsimple/php-server.git#1.2.0"
+      context: "https://github.com/dirtsimple/php-server.git#1.2.1"
       args:
-        EXTRA_APKS: "less jq nano bind-tools mysql-client yaml-dev"
+        EXTRA_APKS: "less jq nano bind-tools mysql-client yaml-dev py-pygments"
         EXTRA_PECL: "yaml"
     env_file: [ "./deploy/dev.env" ]
     environment: { WP_HOME: "${DEV_URL}", WP_ENV: "dev" }
