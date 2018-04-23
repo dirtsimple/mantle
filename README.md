@@ -43,4 +43,4 @@ $ doco dev up -d        # create and start the dev container
 
 ### Project Status
 
-This project is in active development and lacks end-user documentation other than this file.  For developer documentation, see the [Configuration](Mantle.doco.md), [Commands](Commands.md), [startup](bin/startup), and [state files](./states/README.md) docs.
+This project is in active development and lacks end-user documentation other than this file.  For developer documentation, see the [Configuration](Mantle.doco.md), [Commands](Commands.md), [startup](bin/startup), and [state files](https://github.com/dirtsimple/imposer#how-states-work) docs, along with the [Mantle state file](imposer/Mantle.state.md).
