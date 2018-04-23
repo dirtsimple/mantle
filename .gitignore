@@ -4,6 +4,7 @@
 .doco-cache/
 .env
 deploy/
+imposer/.cache/
 vendor/
 
 public/ext/plugins
