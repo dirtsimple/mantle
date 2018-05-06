@@ -7,7 +7,7 @@
 
 # Available modules (uncomment to use):
 
-dk use: entr-watch        # watch files and re-run tests or other commands
+dk use: reflex-watch        # watch multiple patterns and run different commands on them
 
 # dk use: cram              # run tests using the "cram" functional test tool
 # dk use: shell-console     # make the "console" command enter a subshell
@@ -21,6 +21,17 @@ dk use: entr-watch        # watch files and re-run tests or other commands
 
 dk use: mantle
 
-watch.files() { doco imposer sources; }
+# Don't watch scripts, the DB, or editor temp files
+unwatch 'bin/**' 'script/**' 'deploy/db/**' '**/.~*.md'
 
-on "files_changed" doco imposer apply
+# Changes to state files should re-run apply
+watch+ 'imposer-project.md' '**/*.state.md' -- imposer apply
+
+# Changes to content should be synced immediately, w/full sync at watch start
+before "watch" wp postmark tree content
+watch 'content/**/*.md' -- wp postmark sync {}
+
+# Recreate dev container on changes to .envrc, deploy/dev.env, deploy/all.env, etc.
+watch 'deploy/*.env' '.env' '.envrc' -- doco dev up -d
+
+# TODO: re-build and re-up on changes to Mantle.doco.md

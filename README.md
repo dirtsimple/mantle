@@ -1,16 +1,26 @@
 # Literate DevOps for Wordpress
 
-Mantle is a [bedrock](https://github.com/roots/bedrock)-inspired, [imposer](https://github.com/dirtsimple/imposer)-based, composer-oriented, docker-compose runtime environment for Wordpress development, built on [doco](https://github.com/bashup/doco), [.devkit](https://github.com/bashup/.devkit), and [dirtsimple/php-server](https://github.com/dirtsimple/php-server).
+Mantle is a [bedrock](https://github.com/roots/bedrock)-inspired, [imposer](https://github.com/dirtsimple/imposer) and [postmark](https://github.com/dirtsimple/postmark)-based, composer-oriented, docker-compose runtime environment for Wordpress development, built on [doco](https://github.com/bashup/doco), [.devkit](https://github.com/bashup/.devkit), and [dirtsimple/php-server](https://github.com/dirtsimple/php-server).
 
-### State Management
+### State and Content Management
 
-In addition to being a convenient template for Wordpress projects, Mantle is designed to work with [imposer](https://github.com/dirtsimple/imposer), automatically running `imposer apply` at container start to apply Wordpress configuration from your project source and environment variables.
+In addition to being a convenient template for Wordpress projects, Mantle is designed to work with [imposer](https://github.com/dirtsimple/imposer)  and [postmark](https://github.com/dirtsimple/postmark), automatically running `imposer apply` at container start to apply Wordpress configuration from your project source and environment variables, and `wp postmark tree content` to sync Wordpress content from Markdown files with YAML front matter.
 
-For example, you can define a [state file](https://github.com/dirtsimple/imposer#how-states-work) file that reads various API keys from the container's environment and then tweaks Wordpress option values to use those keys instead of whatever was in the database before.  Or you can define states that ensure specific plugins are installed or activated or deactivated, specific menus exist, etc.
+(You can also manually run these commands to sync files at other times, or run `script/watch` to watch them for changes and apply them to the development DB.)
 
-In other words, states are like "migrations" or Drupal "features", allowing you to expose Wordpress configuration in documented, revision-controlled files, instead of having values appear only inside various database tables.
+#### State Files
 
 State files are Markdown documents (`*.state.md` files) that contain blocks of bash, jq, or PHP code, along with YAML or JSON data.  The PHP code embedded in the relevant state files is run using [wp-cli](https://wp-cli.org/), so state file code fragments have full access to the Wordpress API.
+
+States are a bit like database "migrations" or Drupal "features", allowing you to expose Wordpress configuration in documented, revision-controlled files, instead of having values appear only inside various database tables.
+
+For example, you can define a [state file](https://github.com/dirtsimple/imposer#how-states-work) file that reads various API keys from the container's environment and then tweaks Wordpress option values to use those keys instead of whatever was in the database before.  Or you can define states that ensure specific plugins are installed or activated or deactivated, specific menus exist, etc.  (State files can even include `php tweak` code snippets that get automatically combined automatically into a custom plugin, without needing to edit a theme's `functions.php`!)
+
+See the [imposer documentation](https://github.com/dirtsimple/imposer) for more details.
+
+#### Content Files for Posts and Pages
+
+Any `*.md` files in the project's `content/` directory (or any subdirectory thereof) are automatically synced to create Wordpress posts or pages, converting Markdown to HTML for the post body, and using YAML front matter to set metadata like tags, dates, etc.  See the [postmark documentation](https://github.com/dirtsimple/postmark) for more details, and/or `wp help postmark`.
 
 ### Requirements and Installation
 
@@ -43,4 +53,4 @@ $ doco dev up -d        # create and start the dev container
 
 ### Project Status
 
-This project is in active development and lacks end-user documentation other than this file.  For developer documentation, see the [Configuration](Mantle.doco.md), [Commands](Commands.md), and [state files](https://github.com/dirtsimple/imposer#how-states-work) docs, along with the [Mantle state file](imposer/Mantle.state.md).
+This project is in active development and lacks end-user documentation other than this file.  For developer documentation, see the [Configuration](Mantle.doco.md), [Commands](Commands.md), [state files](https://github.com/dirtsimple/imposer#how-states-work) and [content files](https://github.com/dirtsimple/postmark) docs, along with the [Mantle state file](imposer/Mantle.state.md).

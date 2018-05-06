@@ -98,11 +98,15 @@ services:
     environment: { WP_HOME: "${STAGE_URL}", WP_ENV: "stage" }
   dev:
     build:
-      context: "https://github.com/dirtsimple/php-server.git#1.2.3"
+      context: "https://github.com/dirtsimple/php-server.git#1.2.5"
       args:
-        EXTRA_APKS: "less jq nano bind-tools mysql-client yaml-dev py-pygments"
-        EXTRA_PECL: "yaml"
-        GLOBAL_REQUIRE: hirak/prestissimo:^0.3.7 dirtsimple/imposer:dev-master wp-cli/entity-command:^1.3|dev-master psy/psysh:^0.8.17
+        EXTRA_APKS: "less jq nano bind-tools mysql-client py-pygments"
+        GLOBAL_REQUIRE:
+          hirak/prestissimo:^0.3.7
+          psy/psysh:@stable
+          dirtsimple/imposer:dev-master
+          dirtsimple/postmark:dev-master
+          wp-cli/entity-command:^1.3|dev-master
     env_file: [ "./deploy/dev.env" ]
     environment: { WP_HOME: "${DEV_URL}", WP_ENV: "dev" }
     volumes:
