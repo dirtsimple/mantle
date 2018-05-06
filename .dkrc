@@ -21,8 +21,15 @@ dk use: reflex-watch        # watch multiple patterns and run different commands
 
 dk use: mantle
 
-# Don't watch scripts, the DB, or editor temp files
-unwatch 'bin/**' 'script/**' 'deploy/db/**' '**/.~*.md'
+# Don't watch scripts, the DB, WordPress, or editor temp files
+unwatch 'bin/**' 'script/**' 'deploy/db/**' 'public/wp/**' '**/.~*.md'
+
+# Don't watch caches, doco or devkit stuff, either
+unwatch 'imposer/.cache/**' '.doco-cache.*' '.doco-cache/**' '.devkit/**' 'script/**'
+
+
+# Make sure dev env is up during watch
+before "watch" doco dev up -d
 
 # Changes to state files should re-run apply
 watch+ 'imposer-project.md' '**/*.state.md' -- imposer apply
