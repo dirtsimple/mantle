@@ -13,6 +13,10 @@ ENV NGINX_NO_WRITE "."
 ENV EXCLUDE_PHP    "/ext/uploads"
 
 ENV PAGER "less"
+
+ENV IMPOSER_THEMES   "public/ext/themes"
+ENV IMPOSER_PLUGINS  "public/ext/plugins"
+ENV IMPOSER_VENDOR   "vendor"
 ENV IMPOSER_PACKAGES "/home/developer/.wp-cli/packages"
 ENV IMPOSER_GLOBALS  "/composer/vendor"
 
