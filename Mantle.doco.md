@@ -57,57 +57,23 @@ set-alias servers dev stage prod
 set-alias cmd-default dev   # default to 'dev' service
 ```
 
-#### Defaults
-
-```yaml
-services:
-  prod: &defaults
-      image: dirtsimple/mantle:latest
-      env_file: [ "./deploy/all.env" ]
-      environment:
-        RUN_SCRIPTS: "bin/startup"
-        PHP_CONTROLLER: "true"
-        PHP_MEM_LIMIT: "256"
-        PUBLIC_DIR: public
-        NGINX_OWNED: public/ext/uploads
-        NGINX_WRITABLE: public/ext/uploads
-        NGINX_READABLE: .
-        NGINX_NO_WRITE: .
-        EXCLUDE_PHP: /ext/uploads
-        PAGER: "less"
-        IMPOSER_THEMES:
-        IMPOSER_PLUGINS:
-        IMPOSER_VENDOR:
-        IMPOSER_PACKAGES: /home/developer/.wp-cli/packages
-        IMPOSER_GLOBALS: /composer/vendor
-  stage:
-    <<: *defaults
-  dev:
-    <<: *defaults
-```
-#### Environment-Specific Config
-
 ```yaml
 services:
   prod:
+    # TODO: image should be a variable, and a git repo+ref should be set
+    image: dirtsimple/mantle:latest
     restart: always
-    env_file: [ "./deploy/prod.env" ]
+    env_file: [ "./deploy/all.env", "./deploy/prod.env" ]
     environment: { WP_HOME: "${PROD_URL}", WP_ENV: "prod" }
   stage:
-    env_file: [ "./deploy/stage.env" ]
+    image: dirtsimple/mantle:latest
+    env_file: [ "./deploy/all.env", "./deploy/stage.env" ]
     environment: { WP_HOME: "${STAGE_URL}", WP_ENV: "stage" }
   dev:
+    image: dirtsimple/mantle:latest
     build:
-      context: "https://github.com/dirtsimple/php-server.git#1.2.7"
-      args:
-        EXTRA_APKS: "less jq nano bind-tools mysql-client py-pygments"
-        GLOBAL_REQUIRE:
-          hirak/prestissimo:^0.3.7
-          psy/psysh:@stable
-          dirtsimple/imposer:dev-master
-          dirtsimple/postmark:dev-master
-          wp-cli/entity-command:^1.3|dev-master
-    env_file: [ "./deploy/dev.env" ]
+      context: .
+    env_file: [ "./deploy/all.env", "./deploy/dev.env" ]
     environment: { WP_HOME: "${DEV_URL}", WP_ENV: "dev" }
     volumes:
       - .:/var/www/html
