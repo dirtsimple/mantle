@@ -51,7 +51,7 @@ load-mantle-config() {
 ### PHP Servers
 
 ```shell
-VERSION 2.1
+VERSION 3.3
 SERVICES dev stage prod
 set-alias servers dev stage prod
 set-alias cmd-default dev   # default to 'dev' service
@@ -78,8 +78,8 @@ services:
         IMPOSER_THEMES:
         IMPOSER_PLUGINS:
         IMPOSER_VENDOR:
-        IMPOSER_PACKAGES:
-        IMPOSER_GLOBALS:
+        IMPOSER_PACKAGES: /home/developer/.wp-cli/packages
+        IMPOSER_GLOBALS: /composer/vendor
   stage:
     <<: *defaults
   dev:
@@ -98,7 +98,7 @@ services:
     environment: { WP_HOME: "${STAGE_URL}", WP_ENV: "stage" }
   dev:
     build:
-      context: "https://github.com/dirtsimple/php-server.git#1.2.5"
+      context: "https://github.com/dirtsimple/php-server.git#1.2.7"
       args:
         EXTRA_APKS: "less jq nano bind-tools mysql-client py-pygments"
         GLOBAL_REQUIRE:
