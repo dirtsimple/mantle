@@ -9,4 +9,4 @@ set -euo pipefail
 # Generate initial .lock if not present
 [[ -f "$CODE_BASE/composer.lock" ]] || composer install --working-dir="$CODE_BASE" $COMPOSER_OPTIONS
 
-cd "$CODE_BASE" && imposer apply && wp postmark tree content
+cd "$CODE_BASE" && imposer apply

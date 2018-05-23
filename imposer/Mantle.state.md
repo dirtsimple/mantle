@@ -22,6 +22,15 @@ mantle-is-installed() { mantle-db-query "SHOW CREATE TABLE ${DB_PREFIX-wp_}optio
 mantle-db-exists() { mantle-db-query >/dev/null 2>&1; }
 ```
 
+### Postmark Integration
+
+Whenever `imposer apply` is run, we also import content from the `content/` directory, which saves a lot of PHP/Wordpress startup overhead that would happen from running it as a separate command.
+
+```shell
+require "dirtsimple/postmark"
+postmark-content "content"
+```
+
 ### Commands
 
 #### imposer og (options get)
