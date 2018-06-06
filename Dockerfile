@@ -1,4 +1,4 @@
-FROM dirtsimple/php-server:1.2.7
+FROM dirtsimple/php-server:1.2.9
 
 ENV RUN_SCRIPTS    "bin/startup"
 ENV PHP_CONTROLLER "true"
@@ -20,5 +20,5 @@ ENV IMPOSER_VENDOR   "vendor"
 ENV IMPOSER_PACKAGES "/home/developer/.wp-cli/packages"
 ENV IMPOSER_GLOBALS  "/composer/vendor"
 
-RUN EXTRA_APKS="less jq nano bind-tools mysql-client py-pygments" install-extras \
+RUN EXTRA_APKS="less jq nano bind-tools mysql-client py-pygments git-perl" install-extras \
     && composer-global psy/psysh:@stable dirtsimple/imposer:dev-master dirtsimple/postmark:dev-master
