@@ -20,5 +20,6 @@ ENV IMPOSER_VENDOR   "vendor"
 ENV IMPOSER_PACKAGES "/home/developer/.wp-cli/packages"
 ENV IMPOSER_GLOBALS  "/composer/vendor"
 
-RUN EXTRA_APKS="less jq nano bind-tools mysql-client py-pygments git-perl" install-extras \
+RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community/" >> /etc/apk/repositories \
+    && EXTRA_APKS="less jq nano bind-tools mysql-client py-pygments git-perl colordiff" install-extras \
     && composer-global psy/psysh:@stable dirtsimple/imposer:dev-master dirtsimple/postmark:dev-master
