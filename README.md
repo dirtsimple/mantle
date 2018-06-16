@@ -8,13 +8,13 @@ In addition to being a convenient template for Wordpress projects, Mantle is des
 
 (You can also manually run these commands to sync files at other times, or run `script/watch` to watch them for changes and apply them to the development DB.)
 
-#### State Files
+#### State Modules
 
-State files are Markdown documents (`*.state.md` files) that contain blocks of bash, jq, or PHP code, along with YAML or JSON data.  The PHP code embedded in the relevant state files is run using [wp-cli](https://wp-cli.org/), so state file code fragments have full access to the Wordpress API.
+State modules are Markdown documents (`*.state.md` files) that contain blocks of bash, jq, or PHP code, along with YAML or JSON data.  The PHP code embedded in the relevant state files is run using [wp-cli](https://wp-cli.org/), so state file code fragments have full access to the Wordpress API.
 
-States are a bit like database "migrations" or Drupal "features", allowing you to expose Wordpress configuration in documented, revision-controlled files, instead of having values appear only inside various database tables.
+State modules are a bit like database "migrations" or Drupal "features", allowing you to expose Wordpress configuration in documented, revision-controlled files, instead of having values appear only inside various database tables.
 
-For example, you can define a [state file](https://github.com/dirtsimple/imposer#how-states-work) file that reads various API keys from the container's environment and then tweaks Wordpress option values to use those keys instead of whatever was in the database before.  Or you can define states that ensure specific plugins are installed or activated or deactivated, specific menus exist, etc.  (State files can even include `php tweak` code snippets that get automatically combined automatically into a custom plugin, without needing to edit a theme's `functions.php`!)
+For example, you can define a [state module](https://github.com/dirtsimple/imposer#how-state-modules-work) that reads various API keys from the container's environment and then tweaks Wordpress option values to use those keys instead of whatever was in the database before.  Or you can define modules that ensure specific plugins are installed or activated or deactivated, specific menus exist, etc.  (State modules can even include `php tweak` code snippets that get automatically combined automatically into a custom plugin, without needing to edit a theme's `functions.php`!)
 
 See the [imposer documentation](https://github.com/dirtsimple/imposer) for more details.
 
@@ -53,4 +53,4 @@ $ doco dev up -d        # create and start the dev container
 
 ### Project Status
 
-This project is in active development and lacks end-user documentation other than this file.  For developer documentation, see the [Configuration](Mantle.doco.md), [Commands](Commands.md), [state files](https://github.com/dirtsimple/imposer#how-states-work) and [content files](https://github.com/dirtsimple/postmark) docs, along with the [Mantle state file](imposer/Mantle.state.md).
+This project is in active development and lacks end-user documentation other than this file.  For developer documentation, see the [Configuration](Mantle.doco.md), [Commands](Commands.md), [state modules](https://github.com/dirtsimple/imposer#how-state-modules-work) and [content files](https://github.com/dirtsimple/postmark#readme) docs, along with the [Mantle state file](imposer/Mantle.state.md).
