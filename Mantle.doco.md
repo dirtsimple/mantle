@@ -74,7 +74,7 @@ services:
     build:
       context: .
     env_file: [ "./deploy/all.env", "./deploy/dev.env" ]
-    environment: { WP_HOME: "${DEV_URL}", WP_ENV: "dev" }
+    environment: { WP_HOME: "${DEV_URL}", WP_ENV: "dev", MODD_CONF: "modd.conf" }
     volumes:
       - .:/var/www/html
       - empty:/var/www/html/deploy

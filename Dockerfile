@@ -1,4 +1,4 @@
-FROM dirtsimple/php-server:1.2.9
+FROM dirtsimple/php-server:1.3.1
 
 ENV RUN_SCRIPTS    "bin/startup"
 ENV PHP_CONTROLLER "true"
@@ -8,7 +8,7 @@ ENV PUBLIC_DIR "public"
 
 ENV NGINX_OWNED    "public/ext/uploads"
 ENV NGINX_WRITABLE "public/ext/uploads"
-ENV NGINX_READBLE  "public vendor"
+ENV NGINX_READABLE "public vendor"
 ENV NGINX_NO_WRITE "."
 ENV EXCLUDE_PHP    "/ext/uploads"
 
@@ -22,4 +22,4 @@ ENV IMPOSER_GLOBALS  "/composer/vendor"
 
 RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community/" >> /etc/apk/repositories \
     && EXTRA_APKS="less jq nano bind-tools mysql-client py-pygments git-perl colordiff" install-extras \
-    && composer-global psy/psysh:@stable dirtsimple/imposer:dev-master dirtsimple/postmark:dev-master
+    && composer-global  psy/psysh:@stable wp-cli/wp-cli dirtsimple/imposer:dev-master dirtsimple/postmark:dev-master

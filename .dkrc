@@ -7,8 +7,6 @@
 
 # Available modules (uncomment to use):
 
-dk use: reflex-watch        # watch multiple patterns and run different commands on them
-
 # dk use: cram              # run tests using the "cram" functional test tool
 # dk use: shell-console     # make the "console" command enter a subshell
 # dk use: virtualenv        # enable creation and use of Python virtualenvs
@@ -21,24 +19,3 @@ dk use: reflex-watch        # watch multiple patterns and run different commands
 
 dk use: mantle
 
-# Don't watch scripts, the DB, WordPress, or editor temp files
-unwatch 'bin/**' 'script/**' 'deploy/db/**' 'public/wp/**' '**/.~*.md'
-
-# Don't watch caches, doco or devkit stuff, either
-unwatch 'imposer/.cache/**' '.doco-cache.*' '.doco-cache/**' '.devkit/**' 'script/**'
-
-
-# Make sure dev env is up during watch, and recreate dev container on changes
-# to .envrc, deploy/dev.env, deploy/all.env, etc.
-watch+ 'deploy/*.env' '.env' '.envrc' -- doco dev up -d
-
-# Apply states at start, and whenever state files change
-watch+ 'imposer-project.md' '**/*.state.md' -- imposer apply
-
-# Changes to content should be synced immediately, w/full sync at watch start
-# and when template(s) or prototypes change
-before "watch" wp postmark tree content
-watch 'content/**/*.md' '!**/.postmark/*.md' -- wp postmark sync {}
-watch 'content/**/.postmark/**' -- wp postmark tree content --force
-
-# TODO: re-build and re-up on changes to Mantle.doco.md
