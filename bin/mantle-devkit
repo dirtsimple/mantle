@@ -15,29 +15,29 @@ dk.bootstrap() {
     require-any doco basher install bashup/doco
     require-any jq
     require-any docker-compose
-    mkdir -p deploy
+    mkdir -p deploy vendor
 }
 
 dk.setup() {
     dk bootstrap
 
     # Generate db config
-    local env_file=.env
-    [[ -f "$env_file" ]] || cp example.env "$env_file"
-    env-setdefault DB_ROOTUSER echo root
-    env-setdefault DB_ROOTPASS gen-pass
+    [[ -f .env ]] || cp example.env .env
+    .env --file .env
+    .env generate DB_ROOTUSER echo root
+    .env generate DB_ROOTPASS gen-pass
 
-    local env_file=deploy/all.env
-    env-setdefault WP_ADMIN_USER whoami
-    env-setdefault WP_ADMIN_EMAIL echo "$USER@$HOSTNAME"
-    env-setdefault WP_ADMIN_PASS openssl rand -base64 8
+    .env --file deploy/all.env
+    .env generate WP_ADMIN_USER whoami
+    .env generate WP_ADMIN_EMAIL echo "$USER@$HOSTNAME"
+    .env generate WP_ADMIN_PASS openssl rand -base64 8
 
     # Generate any needed WP config data for all containers
     set -- prod stage dev
     while (($#)); do
-        local env_file=deploy/$1.env
-        env-setdefault DB_USER echo "$1"
-        env-setdefault DB_PASSWORD gen-pass
+        .env --file deploy/"$1".env
+        .env generate DB_USER echo "$1"
+        .env generate DB_PASSWORD gen-pass
         wp-keygen
         shift
     done
@@ -46,22 +46,14 @@ dk.setup() {
     doco build dev
 }
 
-# Add an entry to an .env file if it's not already there
-env-setdefault() {
-    if [[ ! -f "$env_file" ]] || ! grep -qs "^\\s*$1=" "$env_file"; then
-        REPLY=$("${@:2}")  # trap any failure here
-        echo "$1=$REPLY" >>"$env_file"
-    fi
-}
-
 gen-key() { openssl rand -base64 48; }
 gen-pass() { openssl rand -base64 18; }
 
 wp-keygen() {
     set -- AUTH SECURE_AUTH LOGGED_IN NONCE
     while (($#)); do
-        env-setdefault "$1_KEY" gen-key;
-        env-setdefault "$1_SALT" gen-key;
+        .env generate "$1_KEY" gen-key
+        .env generate "$1_SALT" gen-key
         shift
     done
 }
