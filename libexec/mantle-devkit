@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
 
+# Route in-container commands via docker-compose
+for REPLY in imposer composer wp dba; do have "$REPLY" || catbin "$REPLY" <<EOF
+#!/usr/bin/env bash
+exec doco $REPLY "\$@"
+EOF
+done
+
 loco_exec() {
     doco "$@";  # Delegate unknown commands to doco
 }

@@ -5,4 +5,6 @@
 # the devkit defaults.
 # ---
 
-dk use: dotenv mantle
+dk use: dotenv
+
+source ./libexec/mantle-devkit
