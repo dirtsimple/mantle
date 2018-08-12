@@ -53,8 +53,8 @@ load-mantle-config() {
 ```shell
 VERSION 3.3
 SERVICES dev stage prod
-set-alias servers dev stage prod
-set-alias cmd-default dev   # default to 'dev' service
+GROUP servers   := dev stage prod
+GROUP --default := dev   # default to 'dev' service
 ```
 
 ```yaml
@@ -72,7 +72,7 @@ services:
   dev:
     image: dirtsimple/mantle:latest
     build:
-      context: .
+      context: docker
     env_file: [ "./deploy/all.env", "./deploy/dev.env" ]
     environment: { WP_HOME: "${DEV_URL}", WP_ENV: "dev", MODD_CONF: "modd.conf" }
     volumes:

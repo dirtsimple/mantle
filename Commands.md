@@ -42,22 +42,6 @@ parse-url() {
 
 ```
 
-## Service Commands
-
-Normally, `up`, `start`, `stop`, etc. apply to all services by default.  But we only want them to apply to development:
-
-```shell
-for REPLY in create kill logs pause pull push restart rm scale start stop unpause up; do eval "
-doco.$REPLY() {
-    if have-services; then
-        loco_exec $REPLY \"\$@\"
-    else
-        with-service dev loco_exec $REPLY \"\$@\"
-    fi
-}"
-done
-```
-
 ## Developer Commands
 
 These commands execute their arguments inside exactly one service container, as the developer user.  If no services are specified, the default is to run against the `dev` container.
@@ -70,32 +54,32 @@ Run the specified command line inside the container using the `as-developer` too
 doco.asdev() {
     set -- as-developer "$@";
     [[ -t 1 ]] || set -- -T "$@";
-    doco cmd "1 asdev" exec "$@";
+    doco exec "$@";
 }
 ```
 
 ### wp
 
 ```shell
-doco.wp() { doco cmd "1 wp" asdev env PAGER='less' LESS=R wp "$@"; }
+doco.wp() { doco asdev env PAGER='less' LESS=R wp "$@"; }
 ```
 
 ### db
 
 ```shell
-doco.db() { doco cmd "1 db" asdev wp db "$@"; }
+doco.db() { doco asdev wp db "$@"; }
 ```
 
 ### composer
 
 ```shell
-doco.composer() { doco cmd "1 composer" asdev composer "$@"; }
+doco.composer() { doco asdev composer "$@"; }
 ```
 
 ### imposer
 
 ```shell
-doco.imposer() { doco cmd "1 imposer" asdev imposer "$@"; }
+doco.imposer() { doco asdev imposer "$@"; }
 ```
 
 ## Other Commands
