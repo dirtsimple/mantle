@@ -24,7 +24,7 @@ Any `*.md` files in the project's `content/` directory (or any subdirectory ther
 
 ### Requirements and Installation
 
-To run Mantle, you'll need git, docker, [jq](https://stedolan.github.io/jq/) 1.5+, and [docker-compose](https://docs.docker.com/compose/), on a machine with bash 4.  ([direnv](https://direnv.net/) is also highly recommended, but not strictly required: without it, you'll need to manually source the `.envrc` in your project directory to be able to access the `doco` and `dk` tools, among others.)
+To run Mantle, you'll need git, docker, [jq](https://stedolan.github.io/jq/) 1.5+, and [docker-compose](https://docs.docker.com/compose/), on a machine with bash 4.4.  ([direnv](https://direnv.net/) is also highly recommended, but not strictly required: without it, you'll need to manually source the `.envrc` in your project directory to be able to access the `doco` and `dk` tools, among others.)  You will also need a tool for YAML to JSON conversion, such as [this one](https://github.com/bronze1man/yaml2json), PyYAML, or [yaml2json.php](https://packagist.org/packages/dirtsimple/yaml2json).
 
 To begin using it, simply:
 
@@ -34,23 +34,18 @@ $ cd myproject
 $ script/setup
 ```
 
-This will initialize the project, creating `myproject/.env` and various `myproject/deploy/*.env` files.  Review and edit these files to make sure that things are configured to your needs.
+This will initialize the project, creating `.env` and `myproject.doco.md` files for you to edit.  (You can rename the `.doco.md` file, so long as it still ends in `.doco.md`).  Review and edit these files to make sure that things are configured to your needs.
 
-The most critical settings are in the main `myproject/.env` file, where you will need to:
+The most critical settings are in the `.doco.md` file, where you will need to:
 
-* Set the URLs for your dev, stage, and prod environments
+* Set the URLs and environments for your sites
 * Determine how those URLs will be routed to their containers (e.g. via port mapping, or a reverse proxy such as [jwilder/nginx-proxy](https://github.com/jwilder/nginx-proxy) or [Traefik](https://docs.traefik.io/)), and
 * Decide whether you'll be using a project-specific mysql server (the default), or a shared one
 
-Once you've configured your project, you can then:
+Once you've configured your project, you can then `doco up` to create your sites.  Sites tagged with `mount-code` will automatically create a subdirectory named for that site, with a spun-off clone of [mantle-site](https://github.com/dirtsimple/mantle-site) in it for you to edit.  The subdirectory will be a new git repo with one commit, initializing the project.  From there you can configure other things at will.
 
-```bash
-$ doco dev dba mkuser   # make a dev user w/generated password and db access
-$ doco dev up -d        # create and start the dev container
-```
-
-(Note: if you're not using direnv and don't have doco installed globally, you'll need to `source .envrc` in a subshell to add project tools like `doco` to your `PATH`.  This will also override `wp` and `composer` with scripts that run those commands inside the development container, i.e. by aliasing them to `doco wp` and `doco composer`.)
+(Note: if you're not using direnv and don't have doco installed globally, you'll need to either `source .envrc` in a subshell manually or run `script/console` to do it automatically.  This will add project tools like `doco` to your `PATH`, which in turn will provide `wp` , `imposer`, and `composer` scripts that run those commands inside the default container, i.e. by aliasing them to `doco wp` and `doco composer`.)
 
 ### Project Status
 
-This project is in active development and lacks end-user documentation other than this file.  For developer documentation, see the [Configuration](Mantle.doco.md), [Commands](Commands.md), [state modules](https://github.com/dirtsimple/imposer#how-state-modules-work) and [content files](https://github.com/dirtsimple/postmark#readme) docs, along with the [Mantle state file](imposer/Mantle.state.md).
+This project is in active development and lacks end-user documentation other than this file.  For developer documentation, see the [mantle-lib](https://github.com/dirtsimple/mantle-lib) and [mantle-site](https://github.com/dirtsimple/mantle-site) projects.
