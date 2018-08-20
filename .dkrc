@@ -8,6 +8,9 @@
 dk use: cram              # run tests using the "cram" functional test tool
 dk use: modd-watch        # watch files and re-run tests or other commands
 dk use: shell-console     # make the "console" command enter a subshell
-dk use: mantle
 
-watch+ "*.md" "specs/*" "!**/*.md.err" "!**/.~*.md" -- dk test
+[[ -d "$BASHER_PREFIX"/dirtsimple/mantle-lib ]] ||
+	# You can change this to use a specific non-master branch, if needed
+	github dirtsimple/mantle-lib master
+
+dk use: mantle
