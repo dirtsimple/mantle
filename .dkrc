@@ -5,6 +5,9 @@
 # the devkit defaults.
 # ---
 
-dk use: dotenv
+dk use: cram              # run tests using the "cram" functional test tool
+dk use: modd-watch        # watch files and re-run tests or other commands
+dk use: shell-console     # make the "console" command enter a subshell
+dk use: mantle
 
-source ./libexec/mantle-devkit
+watch+ "*.md" "specs/*" "!**/*.md.err" "!**/.~*.md" -- dk test
