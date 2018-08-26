@@ -6,7 +6,7 @@ Mantle is a [bedrock](https://github.com/roots/bedrock)-inspired, [imposer](http
 
 In addition to being a convenient template for Wordpress projects, Mantle is designed to work with [imposer](https://github.com/dirtsimple/imposer)  and [postmark](https://github.com/dirtsimple/postmark), automatically running `imposer apply` at container start to apply Wordpress configuration from your project source and environment variables, and `wp postmark tree content` to sync Wordpress content from Markdown files with YAML front matter.
 
-(You can also manually run these commands to sync files at other times, or run `script/watch` to watch them for changes and apply them to the development DB.)
+(You can also manually run these commands to sync files at other times, or add the `watch` tag to a site definition to make its docker container watch for changes and apply them to the database as they occur.)
 
 #### State Modules
 
@@ -36,7 +36,7 @@ $ script/setup
 
 This will initialize the project, creating `.env` and `myproject.doco.md` files for you to edit.  (You can rename the `.doco.md` file, so long as it still ends in `.doco.md`).  Review and edit these files to make sure that things are configured to your needs.
 
-The most critical settings are in the `.doco.md` file, where you will need to:
+The most critical [settings](https://github.com/dirtsimple/mantle-lib/blob/master/share/sample-config.md) are in the `.doco.md` file, where you will need to:
 
 * Set the URLs and environments for your sites
 * Determine how those URLs will be routed to their containers (e.g. via port mapping, or a reverse proxy such as [jwilder/nginx-proxy](https://github.com/jwilder/nginx-proxy) or [Traefik](https://docs.traefik.io/)), and
