@@ -14,3 +14,5 @@ dk use: shell-console     # make the "console" command enter a subshell
 	github dirtsimple/mantle-lib master
 
 dk use: mantle
+
+on update git -C .deps/dirtsimple/mantle-lib pull
