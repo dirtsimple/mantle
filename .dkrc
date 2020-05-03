@@ -5,7 +5,7 @@
 # the devkit defaults.
 # ---
 
-dk use: mantle
+dk use: +dirtsimple/mantle-lib
 
 # Update mantle-lib on script/update or 'dk update'
 on update git -C .deps/dirtsimple/mantle-lib pull
